@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Number Generator</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            background:#f4f7fb;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            padding:20px;
+        }
+
+        .container{
+            width:100%;
+            max-width:700px;
+            background:white;
+            padding:30px;
+            border-radius:15px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:25px;
+            color:#1e293b;
+        }
+
+        .form-group{
+            margin-bottom:20px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:8px;
+            font-weight:bold;
+            color:#334155;
+        }
+
+        input,
+        select{
+            width:100%;
+            padding:12px;
+            border:1px solid #cbd5e1;
+            border-radius:8px;
+            font-size:16px;
+        }
+
+        input:focus,
+        select:focus{
+            outline:none;
+            border-color:#2563eb;
+        }
+
+        button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:8px;
+            background:#2563eb;
+            color:white;
+            font-size:17px;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            background:#1d4ed8;
+        }
+
+        .result-box{
+            margin-top:25px;
+            background:#f8fafc;
+            border:1px solid #e2e8f0;
+            border-radius:10px;
+            padding:20px;
+        }
+
+        .result-title{
+            font-size:20px;
+            margin-bottom:10px;
+            color:#0f172a;
+        }
+
+        #result{
+            color:#111827;
+            line-height:1.8;
+            word-wrap:break-word;
+        }
+
+        .loading{
+            color:#2563eb;
+            font-weight:bold;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Prime Number Generator</h1>
+
+    <div class="form-group">
+        <label>Start Number</label>
+        <input type="number" id="start" placeholder="Enter start number">
+    </div>
+
+    <div class="form-group">
+        <label>End Number</label>
+        <input type="number" id="end" placeholder="Enter end number">
+    </div>
+
+    <div class="form-group">
+        <label>Select Algorithm</label>
+
+        <select id="strategy">
+            <option value="optimized">Optimized Algorithm</option>
+            <option value="sieve">Sieve Algorithm</option>
+        </select>
+    </div>
+
+    <button onclick="generatePrimes()">
+        Generate Prime Numbers
+    </button>
+
+    <div class="result-box">
+        <div class="result-title">Result</div>
+        <div id="result">Prime numbers will appear here...</div>
+    </div>
+
+</div>
+
+<script>
+
+    async function generatePrimes() {
+
+        const start = document.getElementById("start").value;
+        const end = document.getElementById("end").value;
+        const strategy = document.getElementById("strategy").value;
+
+        // Validation
+        if (start === "" || end === "") {
+            alert("Please enter both numbers");
+            return;
+        }
+
+        if (Number(start) < 0 || Number(end) < 0) {
+            alert("Negative numbers are not allowed");
+            return;
+        }
+
+        if (Number(start) >= Number(end)) {
+            alert("End number must be greater than start number");
+            return;
+        }
+
+        document.getElementById("result").innerHTML =
+            '<span class="loading">Generating prime numbers...</span>';
+
+        try {
+
+            const response = await fetch(
+                `http://localhost:8080/primes?start=${start}&end=${end}&strategy=${strategy}`
+            );
+
+            const data = await response.json();
+
+            document.getElementById("result").innerText = data.join(", ");
+
+        } catch (error) {
+
+            document.getElementById("result").innerText =
+                "Error while fetching data from API";
+        }
+    }
+
+</script>
+
+</body>
+</html>
+```
